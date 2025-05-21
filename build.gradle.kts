@@ -44,6 +44,9 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	runtimeOnly  ("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly  ("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+	// برای اجرای تست‌های JPA با دیتابیس درون‌خطی H2
+	testRuntimeOnly("com.h2database:h2")
 }
 
 tasks.withType<Test> {
