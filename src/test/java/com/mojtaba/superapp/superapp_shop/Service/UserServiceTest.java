@@ -1,7 +1,8 @@
-package com.mojtaba.superapp.superapp_shop.service;
+package com.mojtaba.superapp.superapp_shop.Service;
 
 import com.mojtaba.superapp.superapp_shop.entity.User;
 import com.mojtaba.superapp.superapp_shop.repository.UserRepository;
+import com.mojtaba.superapp.superapp_shop.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
