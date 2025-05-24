@@ -38,7 +38,6 @@ public class RoleService {
     public Role updateRole(Integer id, Role roleDetails) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-        // اینجا به جای setName از setRoleName استفاده کنید
         role.setRoleName(roleDetails.getRoleName());
         return roleRepository.save(role);
     }

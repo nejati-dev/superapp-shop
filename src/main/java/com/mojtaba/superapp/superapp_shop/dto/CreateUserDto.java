@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class CreateUserDto {
     @Email(message = "فرمت ایمیل نامعتبر است")
-    @NotBlank(message = "ایمیل نمی‌تواند خالی باشد")
     private String email;
 
     @NotBlank(message = "شماره تلفن نمی‌تواند خالی باشد")
