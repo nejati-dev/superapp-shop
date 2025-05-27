@@ -3,7 +3,7 @@ package com.mojtaba.superapp.superapp_shop.controller;
 import com.mojtaba.superapp.superapp_shop.dto.CreateUserDto;
 import com.mojtaba.superapp.superapp_shop.dto.UserDto;
 import com.mojtaba.superapp.superapp_shop.dto.UpdateUserDto;
-import com.mojtaba.superapp.superapp_shop.dto.UserMapper;
+import com.mojtaba.superapp.superapp_shop.util.UserMapper;
 import com.mojtaba.superapp.superapp_shop.entity.User;
 import com.mojtaba.superapp.superapp_shop.exception.ResourceNotFoundException;
 import com.mojtaba.superapp.superapp_shop.service.UserService;
