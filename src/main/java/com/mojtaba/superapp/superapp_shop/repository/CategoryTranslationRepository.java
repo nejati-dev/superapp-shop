@@ -1,0 +1,13 @@
+package com.mojtaba.superapp.superapp_shop.repository;
+
+import com.mojtaba.superapp.superapp_shop.entity.CategoryTranslation;
+import com.mojtaba.superapp.superapp_shop.entity.CategoryTranslationId;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface CategoryTranslationRepository extends JpaRepository<CategoryTranslation, CategoryTranslationId> {
+    List<CategoryTranslation> findByIdCategoryId(Integer categoryId);
+}
