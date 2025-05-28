@@ -33,7 +33,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional(readOnly = true)
     public List<Address> findByUserId(Long userId) {
-        return repo.findByUserId(userId);
+        return repo.findByUserUserId(userId);
     }
 
     @Override

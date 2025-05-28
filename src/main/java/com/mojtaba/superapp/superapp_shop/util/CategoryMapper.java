@@ -1,42 +1,46 @@
 package com.mojtaba.superapp.superapp_shop.util;
 
-import com.mojtaba.superapp.superapp_shop.dto.*;
-import com.mojtaba.superapp.superapp_shop.entity.*;
+import com.mojtaba.superapp.superapp_shop.dto.CategoryTranslationDto;
+import com.mojtaba.superapp.superapp_shop.entity.Category;
+import com.mojtaba.superapp.superapp_shop.entity.CategoryTranslation;
+import com.mojtaba.superapp.superapp_shop.entity.CategoryTranslationId;
+import com.mojtaba.superapp.superapp_shop.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
-import java.util.stream.Collectors;
 
 @Component
 public class CategoryMapper {
+    private final CategoryRepository catRepo;
 
-    public Category fromCreateDto(CreateCategoryDto dto, Category parent) {
-        Category category = new Category();
-        category.setParent(parent);
-        category.setTranslations(dto.getTranslations().stream()
-                .map(tdto -> {
-                    CategoryTranslation ct = new CategoryTranslation();
-                    ct.setCategory(category);
-                    ct.setLangCode(tdto.getLangCode());
-                    ct.setName(tdto.getName());
-                    ct.setDescription(tdto.getDescription());
-                    return ct;
-                })
-                .collect(Collectors.toSet()));
-        return category;
+    public CategoryMapper(CategoryRepository catRepo) {
+        this.catRepo = catRepo;
     }
 
-    public CategoryDto toDto(Category category) {
-        CategoryDto dto = new CategoryDto();
-        dto.setCategoryId(category.getCategoryId());
-        dto.setParentCategoryId(category.getParent() != null ? category.getParent().getCategoryId() : null);
-        dto.setTranslations(category.getTranslations().stream()
-                .map(ct -> {
-                    CategoryTranslationDto td = new CategoryTranslationDto();
-                    td.setLangCode(ct.getLangCode());
-                    td.setName(ct.getName());
-                    td.setDescription(ct.getDescription());
-                    return td;
-                })
-                .collect(Collectors.toList()));
+    public CategoryTranslation toEntity(CategoryTranslationDto tdto) {
+        CategoryTranslation ct = new CategoryTranslation();
+        // تنظیم id (شامل categoryId و langCode)
+        CategoryTranslationId id = new CategoryTranslationId();
+        id.setLangCode(tdto.getLangCode());
+        id.setCategoryId(tdto.getCategoryId());
+        ct.setId(id);
+
+        // تنظیم سایر فیلدها
+        ct.setName(tdto.getName());
+        ct.setDescription(tdto.getDescription());
+
+        // تنظیم رابطه با Category
+        Category category = catRepo.findById(tdto.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        ct.setCategory(category);
+
+        return ct;
+    }
+
+    public CategoryTranslationDto toDto(CategoryTranslation ct) {
+        CategoryTranslationDto dto = new CategoryTranslationDto();
+        dto.setCategoryId(ct.getId().getCategoryId());
+        dto.setLangCode(ct.getId().getLangCode());
+        dto.setName(ct.getName());
+        dto.setDescription(ct.getDescription());
         return dto;
     }
 }

@@ -31,7 +31,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     @Override
     public AuthTokenDto createToken(CreateAuthTokenDto dto) {
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + dto.getUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: ", "id", dto.getUserId()));
         AuthToken entity = mapper.fromCreateDto(dto, user);
         return mapper.toDto(repo.save(entity));
     }
@@ -56,7 +56,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     @Override
     public void revokeToken(Long id) {
         AuthToken t = repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Token not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Token not found:", "id", id));
         t.setRevoked(true);
         repo.save(t);
     }
