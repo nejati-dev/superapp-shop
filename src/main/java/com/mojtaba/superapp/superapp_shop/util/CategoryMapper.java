@@ -1,43 +1,43 @@
 package com.mojtaba.superapp.superapp_shop.util;
 
-import com.mojtaba.superapp.superapp_shop.dto.CategoryTranslationDto;
-import com.mojtaba.superapp.superapp_shop.entity.Category;
-import com.mojtaba.superapp.superapp_shop.entity.CategoryTranslation;
-import com.mojtaba.superapp.superapp_shop.entity.CategoryTranslationId;
-import com.mojtaba.superapp.superapp_shop.repository.CategoryRepository;
+import com.mojtaba.superapp.superapp_shop.dto.*;
+import com.mojtaba.superapp.superapp_shop.entity.*;
 import org.springframework.stereotype.Component;
+import java.util.stream.Collectors;
 
 @Component
 public class CategoryMapper {
-    private final CategoryRepository catRepo;
 
-    public CategoryMapper(CategoryRepository catRepo) {
-        this.catRepo = catRepo;
+    public Category fromCreateDto(CreateCategoryDto dto, Category parent) {
+        Category category = new Category();
+        category.setParent(parent);
+        category.setTranslations(dto.getTranslations().stream()
+                .map(t -> {
+                    CategoryTranslation ct = new CategoryTranslation();
+                    ct.setCategory(category); // اتصال Category به CategoryTranslation
+                    ct.setName(t.getName());
+                    ct.setDescription(t.getDescription());
+                    CategoryTranslationId id = new CategoryTranslationId();
+                    id.setLangCode(t.getLangCode());
+                    ct.setId(id);
+                    return ct;
+                })
+                .collect(Collectors.toSet()));
+        return category;
     }
 
-    public CategoryTranslation toEntity(CategoryTranslationDto tdto) {
-        CategoryTranslation ct = new CategoryTranslation();
-        // تنظیم id (شامل categoryId و langCode)
-        CategoryTranslationId id = new CategoryTranslationId();
-        id.setLangCode(tdto.getLangCode());
-        id.setCategoryId(tdto.getCategoryId());
-        ct.setId(id);
-
-        // تنظیم سایر فیلدها
-        ct.setName(tdto.getName());
-        ct.setDescription(tdto.getDescription());
-
-        // تنظیم رابطه با Category
-        Category category = catRepo.findById(tdto.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        ct.setCategory(category);
-
-        return ct;
+    public CategoryDto toDto(Category category) {
+        CategoryDto dto = new CategoryDto();
+        dto.setCategoryId(category.getCategoryId());
+        dto.setParentCategoryId(category.getParent() != null ? category.getParent().getCategoryId() : null);
+        dto.setTranslations(category.getTranslations().stream()
+                .map(this::toTranslationDto)
+                .collect(Collectors.toList()));
+        return dto;
     }
 
-    public CategoryTranslationDto toDto(CategoryTranslation ct) {
+    public CategoryTranslationDto toTranslationDto(CategoryTranslation ct) {
         CategoryTranslationDto dto = new CategoryTranslationDto();
-        dto.setCategoryId(ct.getId().getCategoryId());
         dto.setLangCode(ct.getId().getLangCode());
         dto.setName(ct.getName());
         dto.setDescription(ct.getDescription());

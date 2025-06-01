@@ -10,23 +10,14 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Component;
 
-/**
- * Mapper for converting between Address DTOs and entities.
- */
 @Component
 public class AddressMapper {
 
     private final WKTReader wktReader = new WKTReader();
 
-    /**
-     * Converts CreateAddressDto to Address entity.
-     * Note: User entity must be set by the service layer.
-     *
-     * @param dto the CreateAddressDto
-     * @return the Address entity
-     */
-    public Address fromCreateDto(CreateAddressDto dto) {
+    public Address fromCreateDto(CreateAddressDto dto, User user) {
         Address address = new Address();
+        address.setUser(user);
         address.setLabel(dto.getLabel());
         address.setFullAddress(dto.getFullAddress());
         address.setCity(dto.getCity());
@@ -36,12 +27,6 @@ public class AddressMapper {
         return address;
     }
 
-    /**
-     * Updates an existing Address entity from UpdateAddressDto.
-     *
-     * @param address the Address entity to update
-     * @param dto the UpdateAddressDto
-     */
     public void updateFromDto(Address address, UpdateAddressDto dto) {
         if (dto.getLabel() != null) {
             address.setLabel(dto.getLabel());
@@ -63,36 +48,24 @@ public class AddressMapper {
         }
     }
 
-    /**
-     * Converts Address entity to AddressDto.
-     *
-     * @param address the Address entity
-     * @return the AddressDto
-     */
     public AddressDto toDto(Address address) {
         AddressDto dto = new AddressDto();
         dto.setAddressId(address.getAddressId());
-        dto.setUserId(address.getUser().getUserId());
+        dto.setUserId(address.getUser() != null ? address.getUser().getUserId() : null);
         dto.setLabel(address.getLabel());
         dto.setFullAddress(address.getFullAddress());
         dto.setCity(address.getCity());
         dto.setProvince(address.getProvince());
         dto.setPostalCode(address.getPostalCode());
-        dto.setLocationWkt(address.getLocation().toText());
+        dto.setLocationWkt(address.getLocation() != null ? address.getLocation().toText() : null);
         return dto;
     }
 
-    /**
-     * Parses WKT string to Point.
-     *
-     * @param wkt the WKT string
-     * @return the Point object
-     */
     private Point parseWkt(String wkt) {
         try {
             return (Point) wktReader.read(wkt);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid WKT: " + wkt, e);
+            throw new IllegalArgumentException("Invalid WKT format" + wkt, e);
         }
     }
 }

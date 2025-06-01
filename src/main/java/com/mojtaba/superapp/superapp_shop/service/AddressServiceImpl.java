@@ -37,22 +37,28 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Address> findAll() {
+        return repo.findAll();
+    }
+
+    @Override
     public Address update(Long id, Address details) {
-        Address a = repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-        a.setLabel(details.getLabel());
-        a.setFullAddress(details.getFullAddress());
-        a.setCity(details.getCity());
-        a.setProvince(details.getProvince());
-        a.setPostalCode(details.getPostalCode());
-        a.setLocation(details.getLocation());
-        return repo.save(a);
+        Address address = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with", "id", id));
+        address.setLabel(details.getLabel());
+        address.setFullAddress(details.getFullAddress());
+        address.setCity(details.getCity());
+        address.setProvince(details.getProvince());
+        address.setPostalCode(details.getPostalCode());
+        address.setLocation(details.getLocation());
+        return repo.save(address);
     }
 
     @Override
     public void delete(Long id) {
         if (!repo.existsById(id)) {
-            throw new ResourceNotFoundException("User", "id", id);
+            throw new ResourceNotFoundException("Address not found with" , "id", id);
         }
         repo.deleteById(id);
     }

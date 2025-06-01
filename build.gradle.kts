@@ -13,41 +13,70 @@ java {
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	// =========================
+	// Spring Boot, JPA, Security, ...
+	// =========================
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
-	implementation("org.locationtech.jts:jts-core:1.19.0")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("com.github.ben-manes.caffeine:caffeine")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+	// =========================
+	// JTS (کتابخانهٔ هندسه)
+	// =========================
+	implementation("org.locationtech.jts:jts-core:1.19.0")
+
+	// =========================
+	// Hibernate Spatial (برای PostgreSQL + JTS)
+	// =========================
+	implementation("org.hibernate:hibernate-spatial:6.6.13.Final")
+	runtimeOnly("org.postgresql:postgresql:42.6.0")
+
+	// =========================
+	// Lombok
+	// =========================
 	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+
+	// =========================
+	// Spring DevTools
+	// =========================
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	// =========================
+	// Dependencies تست
+	// =========================
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 	testImplementation("org.springframework.security:spring-security-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-	runtimeOnly  ("io.jsonwebtoken:jjwt-impl:0.11.5")
-	runtimeOnly  ("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	testImplementation("org.assertj:assertj-core:3.24.2")
+	testImplementation("org.mockito:mockito-core:5.6.0")
+	testImplementation("org.mockito:mockito-junit-jupiter:5.6.0")
 
-	// برای اجرای تست‌های JPA با دیتابیس درون‌خطی H2
-	testRuntimeOnly("com.h2database:h2")
+	// نسخهٔ واحد از H2 برای تست‌های JPA
+	testImplementation("com.h2database:h2:2.3.232")
+
+	// H2GIS (Bundle اصلی) برای فعال‌سازی Spatial در H2
+	// در Maven Central نسخهٔ 2.x موجود است. به عنوان مثال:
+	testImplementation("org.orbisgis:h2gis:2.2.3")
+
+	// (دیگر نیازی به h2spatial-ext به‌صورت جداگانه نیست)
+	// testImplementation("org.orbisgis:h2spatial-ext:1.5.0") // حذف شود
+
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
