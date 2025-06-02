@@ -69,13 +69,7 @@ dependencies {
 	// نسخهٔ واحد از H2 برای تست‌های JPA
 	testImplementation("com.h2database:h2:2.3.232")
 
-	// H2GIS (Bundle اصلی) برای فعال‌سازی Spatial در H2
-	// در Maven Central نسخهٔ 2.x موجود است. به عنوان مثال:
 	testImplementation("org.orbisgis:h2gis:2.2.3")
-
-	// (دیگر نیازی به h2spatial-ext به‌صورت جداگانه نیست)
-	// testImplementation("org.orbisgis:h2spatial-ext:1.5.0") // حذف شود
-
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
